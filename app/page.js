@@ -205,15 +205,16 @@ export default function QuizPage() {
           {currentQuestion?.options.map((option, index) => (
             <button
               key={index}
-              className={`text-sm px-4 py-2 rounded-lg shadow-lg transition-all ${
+              className={`px-4 py-2 rounded-lg shadow-lg transition-all ${
                 selectedOption === option
                   ? option === currentQuestion.answer
                     ? "bg-green-500 text-white"
                     : "bg-red-500 text-white"
-                  : "bg-festiveRed text-white hover:bg-red-700"
+                  : "bg-festiveRed text-white hover:bg-red-700 focus:outline-none"
               }`}
               onClick={() => handleAnswer(option)}
               disabled={!!selectedOption}
+              onTouchStart={(e) => e.target.blur()} // Fix legacy hover effect
             >
               {option}
             </button>
