@@ -91,7 +91,8 @@ export default function QuizPage() {
       <div className="text-center mt-20">
         <h1 className="text-2xl font-bold text-white">
           <span className="text-6xl">🎄</span>
-          <div className="mt-2">Customize Your Quiz</div>
+          <div className="mt-2">Drew House Xmas Quiz</div>
+          <div className="text-base mt-2">Developed by LWJ</div>
         </h1>
         {/*<div className="mb-6 mt-4">
           <Link
