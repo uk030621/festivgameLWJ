@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 function decodeHTML(html) {
   const parser = new DOMParser();
@@ -29,11 +28,40 @@ export default function QuizPage() {
 
   const difficulties = ["easy", "medium", "hard"];
 
+  // Add Snowflake Effect
+  useEffect(() => {
+    const createSnowflakes = () => {
+      const container = document.querySelector("#snow-container");
+      const snowflakeCount = 50;
+
+      if (!container) return;
+
+      for (let i = 0; i < snowflakeCount; i++) {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+
+        // Randomize position and animation duration
+        snowflake.style.left = `${Math.random() * 100}vw`;
+        snowflake.style.animationDuration = `${3 + Math.random() * 5}s`;
+        snowflake.style.animationDelay = `${Math.random() * 3}s`;
+
+        container.appendChild(snowflake);
+
+        // Remove snowflake after animation ends
+        snowflake.addEventListener("animationend", () => {
+          container.removeChild(snowflake);
+        });
+      }
+    };
+
+    createSnowflakes();
+  }, []);
+
   // Fetch questions from API
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const url = `https://opentdb.com/api.php?amount=10${
+      const url = `https://opentdb.com/api.php?amount=50${
         category ? `&category=${category}` : ""
       }${difficulty ? `&difficulty=${difficulty}` : ""}&type=multiple`;
 
@@ -89,20 +117,12 @@ export default function QuizPage() {
   if (!gameStarted) {
     return (
       <div className="text-center mt-20">
+        <div id="snow-container" className="snowflake-container"></div>
         <h1 className="text-2xl font-bold text-white">
-          <span className="text-6xl">🎄</span>
+          <span className="text-8xl">🎄</span>
           <div className="mt-2">Drew House Xmas Quiz</div>
           <div className="text-base mt-2">Developed by LWJ</div>
         </h1>
-        {/*<div className="mb-6 mt-4">
-          <Link
-            className="bg-slate-400 rounded-md text-white cursor-pointer w-fit px-2 py-2"
-            href="/ "
-          >
-            Return
-          </Link>
-        </div>*/}
-
         <div className="mt-10 bg-white p-6 rounded-lg shadow-lg">
           <div className="mb-4">
             <label htmlFor="category" className="block text-lg font-bold mb-2">
@@ -163,6 +183,7 @@ export default function QuizPage() {
   if (currentQuestionIndex >= questions.length) {
     return (
       <div className="text-center mt-20">
+        <div id="snow-container" className="snowflake-container"></div>
         <h2 className="text-2xl font-bold text-white">🎉 Quiz Complete! 🎉</h2>
         <p className="text-xl mt-4 text-gray-200">
           Your Score: {score} / {questions.length}
@@ -195,8 +216,9 @@ export default function QuizPage() {
 
   return (
     <div className="mt-10 text-center">
+      <div id="snow-container" className="snowflake-container"></div>
       <h1 className="text-2xl font-bold mb-6 text-white">
-        <span className="text-6xl">🎄</span>
+        <span className="text-8xl">🎄</span>
         <div className="mt-4">Festive Quiz Game</div>
       </h1>
       <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -214,7 +236,7 @@ export default function QuizPage() {
               }`}
               onClick={() => handleAnswer(option)}
               disabled={!!selectedOption}
-              onTouchStart={(e) => e.target.blur()} // Fix legacy hover effect
+              onMouseDown={(e) => e.preventDefault()}
             >
               {option}
             </button>

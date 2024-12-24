@@ -3,11 +3,72 @@
 @tailwind utilities;
 
 body {
-  @apply bg-festiveGreen text-gray-800;
+  @apply bg-festiveGreen text-gray-800 overflow-x-hidden; /* Prevent horizontal scrolling caused by snowflakes */
 }
 
 h1,
 h2,
 h3 {
   @apply text-festiveRed;
+}
+
+/* Snowflake keyframe animation */
+@keyframes snowFall {
+  0% {
+    transform: translateY(-100px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0.5;
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+/* Snowflake container to avoid layout issues */
+.snowflake-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Prevent snowflakes from interfering with user interaction */
+  z-index: 50; /* Ensures snowflakes are visible but below essential UI */
+  overflow: hidden; /* Prevent scrollbars caused by snowflakes */
+}
+
+/* Snowflake styling */
+.snowflake {
+  position: fixed; /* Ensures snowflakes are independent of layout */
+  top: -50px; /* Start snowflakes above the viewport */
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  animation: snowFall 5s linear infinite, sway 3s ease-in-out infinite;
+  z-index: 9999; /* Keep snowflakes above other content */
+}
+
+/* Dynamic snowflake variations */
+.snowflake.small {
+  width: 5px;
+  height: 5px;
+  animation-duration: 4s, 2s; /* Adjust duration for smaller snowflakes */
+}
+
+.snowflake.large {
+  width: 15px;
+  height: 15px;
+  animation-duration: 6s, 3s; /* Adjust duration for larger snowflakes */
 }
