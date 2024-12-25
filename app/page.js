@@ -23,7 +23,7 @@ export default function QuizPage() {
     { id: 18, name: "Science: Computers" },
     { id: 21, name: "Sports" },
     { id: 23, name: "History" },
-    { id: 27, name: "Animals" },
+    //{ id: 27, name: "Animals" },
   ];
 
   const difficulties = ["easy", "medium", "hard"];
