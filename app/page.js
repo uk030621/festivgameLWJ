@@ -119,8 +119,8 @@ export default function QuizPage() {
       <div className="text-center mt-20">
         <div id="snow-container" className="snowflake-container"></div>
         <h1 className="text-2xl font-bold text-white">
-          <span className="text-8xl">🎄</span>
-          <div className="mt-2">Drew House Xmas Quiz</div>
+          <span className="text-8xl">🦉</span>
+          <div className="mt-2 text-4xl">Quiz</div>
           <div className="text-base mt-2">Developed by LWJ</div>
         </h1>
         <div className="mt-10 bg-white p-6 rounded-lg shadow-lg">
@@ -218,8 +218,8 @@ export default function QuizPage() {
     <div className="mt-10 text-center">
       <div id="snow-container" className="snowflake-container"></div>
       <h1 className="text-2xl font-bold mb-6 text-white">
-        <span className="text-8xl">🎄</span>
-        <div className="mt-4">Festive Quiz Game</div>
+        <span className="text-8xl">🦉</span>
+        <div className="mt-4 text-4xl">Quiz Game</div>
       </h1>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">{currentQuestion?.question}</h2>
@@ -237,6 +237,7 @@ export default function QuizPage() {
               onClick={() => handleAnswer(option)}
               disabled={!!selectedOption}
               onMouseDown={(e) => e.preventDefault()}
+              onTouchEnd={(e) => e.target.blur()} // Clear hover/focus on touch devices
             >
               {option}
             </button>
