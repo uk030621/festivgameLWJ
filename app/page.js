@@ -17,18 +17,18 @@ export default function QuizPage() {
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
 
   const categories = [
     { id: 9, name: "General Knowledge" },
     { id: 18, name: "Science: Computers" },
     { id: 21, name: "Sports" },
     { id: 23, name: "History" },
-    //{ id: 27, name: "Animals" },
+    { id: 27, name: "Animals" },
   ];
 
   const difficulties = ["easy", "medium", "hard"];
 
-  // Add Snowflake Effect
   useEffect(() => {
     const createSnowflakes = () => {
       const container = document.querySelector("#snow-container");
@@ -36,28 +36,32 @@ export default function QuizPage() {
 
       if (!container) return;
 
+      const snowflakes = [];
       for (let i = 0; i < snowflakeCount; i++) {
         const snowflake = document.createElement("div");
         snowflake.classList.add("snowflake");
 
-        // Randomize position and animation duration
         snowflake.style.left = `${Math.random() * 100}vw`;
         snowflake.style.animationDuration = `${3 + Math.random() * 5}s`;
         snowflake.style.animationDelay = `${Math.random() * 3}s`;
 
         container.appendChild(snowflake);
+        snowflakes.push(snowflake);
 
-        // Remove snowflake after animation ends
         snowflake.addEventListener("animationend", () => {
           container.removeChild(snowflake);
         });
       }
+
+      return () => {
+        snowflakes.forEach((sf) => sf.remove());
+      };
     };
 
-    createSnowflakes();
+    const cleanup = createSnowflakes();
+    return cleanup;
   }, []);
 
-  // Fetch questions from API
   const fetchQuestions = async () => {
     setLoading(true);
     try {
@@ -93,10 +97,13 @@ export default function QuizPage() {
     if (option === questions[currentQuestionIndex].answer) {
       setScore(score + 1);
     }
+    setShowCorrectAnswer(true);
+
     setTimeout(() => {
       setSelectedOption(null);
+      setShowCorrectAnswer(false);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }, 1000);
+    }, 2500);
   };
 
   const replaySameQuestions = () => {
@@ -114,10 +121,17 @@ export default function QuizPage() {
     setGameStarted(false);
   };
 
+  const quitGame = () => {
+    resetGame(); // Resets the game to the customization screen
+  };
+
   if (!gameStarted) {
     return (
       <div className="text-center mt-20">
-        <div id="snow-container" className="snowflake-container"></div>
+        <div
+          id="snow-container"
+          className="absolute inset-0 pointer-events-none z-50"
+        ></div>
         <h1 className="text-2xl font-bold text-white">
           <span className="text-8xl">🦉</span>
           <div className="mt-2 text-4xl">Quiz</div>
@@ -165,7 +179,7 @@ export default function QuizPage() {
           </div>
           <button
             onClick={fetchQuestions}
-            className="px-6 py-3 bg-festiveRed text-white rounded-lg shadow-lg hover:bg-red-700 mt-4"
+            className="px-2 py-2 bg-slate-700 text-white rounded-lg shadow-lg hover:bg-slate-800 mt-4"
           >
             Start Quiz
           </button>
@@ -183,7 +197,10 @@ export default function QuizPage() {
   if (currentQuestionIndex >= questions.length) {
     return (
       <div className="text-center mt-20">
-        <div id="snow-container" className="snowflake-container"></div>
+        <div
+          id="snow-container"
+          className="absolute inset-0 pointer-events-none z-50"
+        ></div>
         <h2 className="text-2xl font-bold text-white">🎉 Quiz Complete! 🎉</h2>
         <p className="text-xl mt-4 text-gray-200">
           Your Score: {score} / {questions.length}
@@ -207,6 +224,12 @@ export default function QuizPage() {
           >
             Back to Customization
           </button>
+          {/*<button
+            className="px-6 py-3 bg-black text-white rounded-lg shadow-lg hover:bg-gray-700"
+            onClick={quitGame}
+          >
+            Quit Game
+          </button>*/}
         </div>
       </div>
     );
@@ -216,13 +239,24 @@ export default function QuizPage() {
 
   return (
     <div className="mt-10 text-center">
-      <div id="snow-container" className="snowflake-container"></div>
+      <div
+        id="snow-container"
+        className="absolute inset-0 pointer-events-none z-50"
+      ></div>
       <h1 className="text-2xl font-bold mb-6 text-white">
         <span className="text-8xl">🦉</span>
         <div className="mt-4 text-4xl">Quiz Game</div>
       </h1>
+      <button
+        className="px-2 py-2 bg-slate-700 text-white rounded-lg shadow-lg hover:bg-gray-700 mb-10"
+        onClick={quitGame}
+      >
+        Quit Game
+      </button>
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">{currentQuestion?.question}</h2>
+        <h2 className="text-xl font-bold text-black mb-4">
+          {currentQuestion?.question}
+        </h2>
         <div className="grid grid-cols-2 gap-4">
           {currentQuestion?.options.map((option, index) => (
             <button
@@ -231,18 +265,40 @@ export default function QuizPage() {
                 selectedOption === option
                   ? option === currentQuestion.answer
                     ? "bg-green-500 text-white"
-                    : "bg-red-500 text-white"
-                  : "bg-festiveRed text-white hover:bg-red-700 focus:outline-none"
+                    : "bg-slate-700 text-white"
+                  : "bg-slate-700 text-white hover:bg-slate-800 focus:outline-none"
               }`}
-              onClick={() => handleAnswer(option)}
+              onClick={() => {
+                handleAnswer(option);
+                setTimeout(
+                  () => document.getElementById("reset-hover").click(),
+                  50
+                ); // Simulate click on reset button
+              }}
               disabled={!!selectedOption}
               onMouseDown={(e) => e.preventDefault()}
-              onTouchEnd={(e) => e.target.blur()} // Clear hover/focus on touch devices
             >
               {option}
             </button>
           ))}
         </div>
+        <button
+          id="reset-hover"
+          style={{
+            position: "absolute",
+            left: "-9999px", // Move off-screen
+            top: "-9999px", // Move off-screen
+            visibility: "hidden", // Ensure it's invisible
+          }}
+          onClick={() => {
+            /* This does nothing but removes focus from answer buttons */
+          }}
+        ></button>
+        {showCorrectAnswer && (
+          <div className="mt-4 text-lg font-bold text-green-500">
+            Correct Answer: {currentQuestion.answer}
+          </div>
+        )}
       </div>
     </div>
   );
