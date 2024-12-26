@@ -27,6 +27,9 @@ export default {
         snowFall: "snowFall 5s linear infinite",
         sway: "sway 3s ease-in-out infinite",
       },
+      screens: {
+        "can-hover": { raw: "(hover: hover)" }, // Add this line
+      },
     },
   },
   plugins: [],

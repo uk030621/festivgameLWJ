@@ -266,15 +266,9 @@ export default function QuizPage() {
                   ? option === currentQuestion.answer
                     ? "bg-green-500 text-white"
                     : "bg-slate-700 text-white"
-                  : "bg-slate-700 text-white hover:bg-slate-800 focus:outline-none"
+                  : "bg-slate-700 text-white can-hover:hover:bg-slate-800 focus:outline-none"
               }`}
-              onClick={() => {
-                handleAnswer(option);
-                setTimeout(
-                  () => document.getElementById("reset-hover").click(),
-                  50
-                ); // Simulate click on reset button
-              }}
+              onClick={() => handleAnswer(option)}
               disabled={!!selectedOption}
               onMouseDown={(e) => e.preventDefault()}
             >
@@ -282,18 +276,7 @@ export default function QuizPage() {
             </button>
           ))}
         </div>
-        <button
-          id="reset-hover"
-          style={{
-            position: "absolute",
-            left: "-9999px", // Move off-screen
-            top: "-9999px", // Move off-screen
-            visibility: "hidden", // Ensure it's invisible
-          }}
-          onClick={() => {
-            /* This does nothing but removes focus from answer buttons */
-          }}
-        ></button>
+
         {showCorrectAnswer && (
           <div className="mt-4 text-lg font-bold text-green-500">
             Correct Answer: {currentQuestion.answer}
